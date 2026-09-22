@@ -33,9 +33,4 @@ public class OperacaoController {
                 request.valor()
         );
     }
-
-    @GetMapping("/contas/{contaId}")
-    public Conta consultarConta(@PathVariable Long contaId) {
-        return contaService.buscar(contaId);
-    }
 }
