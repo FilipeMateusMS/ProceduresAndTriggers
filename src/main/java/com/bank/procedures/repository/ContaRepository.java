@@ -12,10 +12,16 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
     Optional<Conta> findByUsuarioId(Long usuarioId);
 
     @Procedure(procedureName = "sp_depositar")
-    void depositar(@Param("p_conta_id") Long contaId, @Param("p_valor") BigDecimal valor);
+    void depositar(
+            @Param("p_conta_id") Long contaId,
+            @Param("p_valor") BigDecimal valor
+    );
 
     @Procedure(procedureName = "sp_debitar")
-    void debitar(@Param("p_conta_id") Long contaId, @Param("p_valor") BigDecimal valor);
+    void debitar(
+            @Param("p_conta_id") Long contaId,
+            @Param("p_valor") BigDecimal valor
+    );
 
     @Procedure(procedureName = "sp_transferir")
     void transferir(

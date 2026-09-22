@@ -120,31 +120,11 @@ O Flyway executa as migrations automaticamente na inicialização.
 
 ## Executar
 
-Suba o PostgreSQL:
+Execute a aplicação com:
 
 ~~~bash
 docker compose up -d
 ~~~
-
-Execute a aplicação:
-
-~~~bash
-./mvnw spring-boot:run
-~~~
-
-No Windows:
-
-~~~powershell
-./mvnw.cmd spring-boot:run
-~~~
-
-O Hibernate valida o schema e o Flyway cria as tabelas, procedures e triggers.
-
-## Transação
-
-`@Transactional` fica no Service.
-
-Assim, a chamada da procedure participa da transação da aplicação. Se uma procedure lançar uma exceção, a operação é revertida.
 
 ## Objetivo de estudo
 
