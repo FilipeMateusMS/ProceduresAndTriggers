@@ -81,36 +81,44 @@ BEGIN
         RAISE EXCEPTION 'A conta de origem e destino devem ser diferentes';
     END IF;
 
-    SELECT status INTO v_status_origem
-      FROM conta
-     WHERE id = p_conta_origem_id
-     FOR UPDATE;
+    -- As contas são bloqueadas sempre na mesma ordem para reduzir
+    -- o risco de deadlock em transferências simultâneas.
+    IF p_conta_origem_id < p_conta_destino_id THEN
+        PERFORM 1 FROM conta WHERE id = p_conta_origem_id FOR UPDATE;
+        PERFORM 1 FROM conta WHERE id = p_conta_destino_id FOR UPDATE;
+    ELSE
+        PERFORM 1 FROM conta WHERE id = p_conta_destino_id FOR UPDATE;
+        PERFORM 1 FROM conta WHERE id = p_conta_origem_id FOR UPDATE;
+    END IF;
 
-    IF NOT FOUND OR v_status_origem <> 'ATIVA' THEN
+    SELECT status, saldo
+      INTO v_status_origem, v_saldo_origem
+      FROM conta
+     WHERE id = p_conta_origem_id;
+
+    SELECT status
+      INTO v_status_destino
+      FROM conta
+     WHERE id = p_conta_destino_id;
+
+    IF v_status_origem IS NULL OR v_status_origem <> 'ATIVA' THEN
         RAISE EXCEPTION 'Conta de origem não encontrada ou não está ativa';
     END IF;
 
-    SELECT status INTO v_status_destino
-      FROM conta
-     WHERE id = p_conta_destino_id
-     FOR UPDATE;
-
-    IF NOT FOUND OR v_status_destino <> 'ATIVA' THEN
+    IF v_status_destino IS NULL OR v_status_destino <> 'ATIVA' THEN
         RAISE EXCEPTION 'Conta de destino não encontrada ou não está ativa';
     END IF;
-
-    SELECT saldo INTO v_saldo_origem
-      FROM conta
-     WHERE id = p_conta_origem_id;
 
     IF v_saldo_origem < p_valor THEN
         RAISE EXCEPTION 'Saldo insuficiente';
     END IF;
 
-    UPDATE conta SET saldo = saldo - p_valor
+    UPDATE conta
+       SET saldo = saldo - p_valor
      WHERE id = p_conta_origem_id;
 
-    UPDATE conta SET saldo = saldo + p_valor
+    UPDATE conta
+       SET saldo = saldo + p_valor
      WHERE id = p_conta_destino_id;
 
     INSERT INTO transacao(tipo, conta_origem_id, conta_destino_id, valor)
