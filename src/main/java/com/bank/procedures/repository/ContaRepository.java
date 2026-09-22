@@ -2,9 +2,8 @@ package com.bank.procedures.repository;
 
 import com.bank.procedures.entity.Conta;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.Optional;
