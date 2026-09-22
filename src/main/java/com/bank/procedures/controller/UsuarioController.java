@@ -33,10 +33,4 @@ public class UsuarioController {
     public Usuario buscar(@PathVariable Long id) {
         return usuarioService.buscar(id);
     }
-
-    @PostMapping("/{usuarioId}/conta")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Conta criarConta(@PathVariable Long usuarioId) {
-        return contaService.criar(usuarioId);
-    }
 }
